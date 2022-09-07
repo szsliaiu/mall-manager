@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        https://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop 
+        https://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx
+        https://www.springframework.org/schema/tx/spring-tx.xsd">
+	
+	<!-- 启用spring注解配置 -->
+    <context:annotation-config />
+    
+    <!-- 配置spring组件扫描器  spring将自动扫描指定包下的组件 -->
+    <context:component-scan base-package="com.xmd.web" >
+    	<!-- spring不去管理控制器组件，依然让springMVC扫描并管理即可 -->
+    	<context:exclude-filter type="annotation" 
+    		expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+    
+    <!-- 启用 AspectJ AOP注解支持 -->
+    <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+    
+    <!-- 引入数据源属性文件 -->
+    <context:property-placeholder location="classpath*:db.properties"/>
+    
+    <!-- 配置数据源 -->
+    <bean id="dataSource" 
+    		class="com.mchange.v2.c3p0.ComboPooledDataSource">
+    	<property name="driverClass" value="${jdbc.driver}"></property>
+    	<property name="jdbcUrl" value="${jdbc.url}"></property>
+    	<property name="user" value="${jdbc.user}"></property>
+    	<property name="password" value="${jdbc.pw}"></property>
+    	
+    	<property name="initialPoolSize" value="${jdbc.initialPoolSize}"></property>
+    	<property name="maxPoolSize" value="${jdbc.maxPoolSize}"></property>
+    	<property name="minPoolSize" value="${jdbc.minPoolSize}"></property>
+    	<property name="maxIdleTime" value="${jdbc.maxIdleTime}"></property>
+    </bean>
+    
+    <!-- 配置Mybatis工厂 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	  	<!-- 配置mybatis数据源环境 使用容器中的数据源（c3p0） -->
+	  	<property name="dataSource" ref="dataSource" />
+	  	<!-- 配置mybatis映射器扫描位置 -->
+	  	<property name="mapperLocations" 
+	  		value="classpath*:mappers/**/*.xml" />
+	</bean>
+	
+	<!-- 配置映射器自动扫描注册工具 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!-- 指定spring帮我们扫描的持久层目录，
+		spring会根据这个目录下的接口及其完成接口绑定的映射器自动注册代理实现类到IOC容器中 -->
+	  	<property name="basePackage" 
+	  		value="com.xmd.web.dao" />
+	  	<!-- 用于指定所使用的持久层组件对象 -->
+	  	<property name="sqlSessionFactoryBeanName" 
+	  		value="sqlSessionFactory" />
+	</bean>
+    
+    
+    <!-- 配置事务管理器 -->
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<!-- 注入要进行事务管理的数据源 -->
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    
+    
+    <!-- 启用spring的事务注解，然后通过注解进行事务控制 -->
+        <tx:annotation-driven transaction-manager="txManager"/> 
+</beans>

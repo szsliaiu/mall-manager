@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_ID" version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+	
+	<!-- 配置当前工程默认欢迎页 -->
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+	
+	<!-- 配置spring初始化监听 它会在工程启动时将springIOC容器初始化完成 -->
+	<listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+	<!-- 配置工程上下文参数 用于指定spring的配置文件位置 -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath*:applicationContext.xml</param-value>
+    </context-param>
+	
+
+	<!-- 配置springmvc的前端控制器  （总控制器） -->
+    <servlet>
+        <servlet-name>springmvc</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <!-- 用于给springmvc的前端控制器传递配置文件 -->
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath*:springmvc.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+    
+    <!-- 配置工程字符集过滤器 -->
+    <filter>
+    	<filter-name>encodingFilter</filter-name>
+    	<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    	<init-param>
+    		<param-name>encoding</param-name>
+    		<param-value>UTF-8</param-value>
+    	</init-param>
+    	<init-param>
+    		<param-name>forceRequestEncoding</param-name>
+    		<param-value>true</param-value>
+    	</init-param>
+    	<init-param>
+    		<param-name>forceResponseEncoding</param-name>
+    		<param-value>true</param-value>
+    	</init-param>
+    </filter>
+    <filter-mapping>
+    	<filter-name>encodingFilter</filter-name>
+    	<url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+    <!-- 配置登录过滤器 -->
+    <filter>
+    	<filter-name>loginFilter</filter-name>
+  		<filter-class>com.xmd.web.filter.LoginFilter</filter-class>
+ </filter>  
+    <filter-mapping>
+    	<filter-name>loginFilter</filter-name>
+   		<url-pattern>/admin/*</url-pattern>
+    </filter-mapping>
+    
+    
+</web-app>

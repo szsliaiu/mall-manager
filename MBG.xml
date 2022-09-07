@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+  PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+	
+  <context id="dev" targetRuntime="MyBatis3">
+  
+    <!-- 配置阻止注释生成规则 -->
+	<commentGenerator> 
+		<property name="suppressAllComments" value="true"/>
+	</commentGenerator>
+	
+	<!-- 配置java模型实体类生成规则 -->
+  	<!-- 配置数据源 -->
+    <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+        connectionURL="jdbc:mysql://localhost:3306/xbmu?useUnicode=true&amp;characterEncoding=utf8"
+        userId="root"
+        password="root">
+    </jdbcConnection>
+    
+    <javaModelGenerator 
+    	targetPackage="com.xmd.web.entity" targetProject="src/main/java">
+      <property name="enableSubPackages" value="true" />
+      <property name="trimStrings" value="true" />
+    </javaModelGenerator>
+	<!-- 配置映射器Mapper生成规则 -->
+    <sqlMapGenerator 
+    	targetPackage="mappers"  targetProject="src/main/resources">
+      <property name="enableSubPackages" value="true" />
+    </sqlMapGenerator>
+	<!-- 配置Dao接口生成规则 -->
+    <javaClientGenerator type="XMLMAPPER" 
+    	targetPackage="com.xmd.web.dao"  targetProject="src/main/java">
+      <property name="enableSubPackages" value="true" />
+    </javaClientGenerator>
+	<!-- 配置要逆向生成的数据表 -->
+	<table tableName="admin" domainObjectName="Admin" 
+		enableCountByExample="false"
+    	enableDeleteByExample="false" 
+    	enableSelectByExample="false" 
+    	enableUpdateByExample="false"
+    	selectByExampleQueryId="false">
+      <property name="useActualColumnNames" value="true"/>
+    </table>
+	<table tableName="goodstype" domainObjectName="GoodsType" 
+		enableCountByExample="false"
+    	enableDeleteByExample="false" 
+    	enableSelectByExample="false" 
+    	enableUpdateByExample="false"
+    	selectByExampleQueryId="false">
+      <property name="useActualColumnNames" value="true"/>
+    </table>
+	<table tableName="goods" domainObjectName="Goods" 
+		enableCountByExample="false"
+    	enableDeleteByExample="false" 
+    	enableSelectByExample="false" 
+    	enableUpdateByExample="false"
+    	selectByExampleQueryId="false">
+      <property name="useActualColumnNames" value="true"/>
+      <columnOverride column="in_price" property="inPrice" />
+      <columnOverride column="sale_price" property="salePrice" />
+      <columnOverride column="product_place" property="productPlace" />
+      <columnOverride column="sale_num" property="saleNum" />
+    </table>
+  </context>
+</generatorConfiguration>
